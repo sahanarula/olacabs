@@ -1,0 +1,65 @@
+<script type="text/javascript">
+hello.init({ 
+    google : '124725328503-1u824iaaoe9rq28kubbe1s8ebso58ns3.apps.googleusercontent.com'
+}, {redirect_uri:'redirect.html'});
+
+$.ajax({
+    url: 'https://api.zomato.com/v1/geocode.json?lat=28.557706&lon=77.205879',
+    type: 'GET',
+    headers: {
+        'X-Zomato-API-Key': '7749b19667964b87a3efc739e254ada2'
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log(data.locality.subzone_id);
+        $.ajax({
+        	url: 'https://api.zomato.com/v1/search.json?city_id='+data.locality.city_id+'&subzone_id='+data.locality.subzone_id+'&count=50',
+        	type: 'GET',
+        	headers: {
+        		'X-Zomato-API-Key': '7749b19667964b87a3efc739e254ada2'
+        	},
+        	dataType: 'JSON',
+        	success: function(success){
+        		console.log(success);
+        	},
+        	error: function(error){
+        		console.log(error);
+        	}
+        });
+        
+    },
+    error: function(err){
+    	console.log(err);
+    }
+});
+
+
+var authFacebook = function(){
+    hello( "google" ).login({scope: "friends,photos,publish" }).then( function(){
+    	hello("google").api("me/friends", "get", function(friends){
+	  		console.log(friends);
+	        hello('google').api('/me').then(function(data){
+		        $.post('/user/saveFriends', {myId: data.id, data: data, friends: friends.data}, function(data, textStatus, xhr) {
+		        		console.log(data);
+		        	/*optional stuff to do after success */
+		        });
+	        })
+        });
+        post_data = { 'access_token': facebook_access_token.access_token, 'viewDataId': viewDataId };
+         window.location = data;
+    }, function(e){
+    	console.log('error aaya hai');
+    	console.log(e);
+    }
+    );
+}
+</script>
+<h1>hello world</h1>
+<button onclick="authFacebook()">Facebook</button>
+
+<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div>
